@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0a0a0c">
+    <title>Запустить стрим</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body class="streamer-page">
+    <main class="streamer-container">
+        <h1>Стример</h1>
+        <video id="localVideo" autoplay playsinline muted></video>
+        <canvas id="captureCanvas" style="display: none;"></canvas>
+        <div class="streamer-controls">
+            <button id="startBtn" class="btn btn-primary">Запустить стрим</button>
+            <button id="stopBtn" class="btn btn-secondary" style="display: none;">Остановить стрим</button>
+        </div>
+        <p id="status" class="status-text">Нажмите "Запустить стрим" и разрешите доступ к камере</p>
+    </main>
+    <script src="/static/js/start_stream.js"></script>
+</body>
+</html>
