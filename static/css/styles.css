@@ -39,18 +39,39 @@ body {
 
 /* Animations */
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.6; transform: scale(1.05); }
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.6;
+        transform: scale(1.05);
+    }
 }
 
 @keyframes shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
+    0% {
+        background-position: -200% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
+    }
 }
 
 /* Header */
@@ -87,6 +108,89 @@ body {
 .nav-link-active {
     color: var(--accent);
 }
+
+.lang-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.lang-dropdown-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.35rem 0.6rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    transition: all var(--transition);
+}
+
+.lang-dropdown-btn:hover,
+.lang-dropdown-btn:focus {
+    border-color: var(--text-muted);
+    background: var(--bg-input);
+}
+
+.lang-flag {
+    width: 20px;
+    height: 14px;
+    object-fit: cover;
+    border-radius: 2px;
+}
+
+.lang-arrow {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    transition: transform var(--transition);
+}
+
+.lang-dropdown.open .lang-arrow {
+    transform: rotate(180deg);
+}
+
+.lang-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.4rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow);
+    list-style: none;
+    min-width: 130px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-5px);
+    transition: all var(--transition);
+    z-index: 100;
+}
+
+.lang-dropdown.open .lang-dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.lang-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background var(--transition);
+}
+
+.lang-option:hover {
+    background: var(--bg-input);
+}
+
 
 .btn-login {
     background: transparent;
@@ -579,15 +683,15 @@ body {
     .streamer-page {
         padding: 0.75rem;
     }
-    
+
     .streamer-container h1 {
         font-size: 1.25rem;
     }
-    
+
     .streamer-controls {
         flex-direction: column;
     }
-    
+
     .streamer-controls .btn {
         width: 100%;
     }
@@ -599,7 +703,7 @@ body {
         min-width: 240px;
         max-width: 320px;
     }
-    
+
     .main-layout {
         padding: 0.875rem;
     }
@@ -611,34 +715,34 @@ body {
         height: auto;
         overflow: auto;
     }
-    
+
     .main-layout {
         flex-direction: column;
         padding: 0.75rem;
         min-height: 0;
     }
-    
+
     .content-left {
         width: 100%;
     }
-    
+
     .sidebar {
         width: 100%;
         min-width: 0;
         max-width: none;
         flex: 1 1 auto;
     }
-    
+
     .chat-section,
     .auction-section {
         min-height: auto;
     }
-    
+
     .chat-messages {
         min-height: 120px;
         max-height: 160px;
     }
-    
+
     .bids-list {
         min-height: 80px;
     }
@@ -649,110 +753,110 @@ body {
     html {
         font-size: 15px;
     }
-    
+
     .header {
         padding: 0.6rem 0.875rem;
     }
-    
+
     .nav {
         gap: 0.75rem;
     }
-    
+
     .nav-link {
         font-size: 0.8rem;
     }
-    
+
     .btn-login {
         padding: 0.35rem 0.75rem;
         font-size: 0.8rem;
     }
-    
+
     .main-layout {
         padding: 0.625rem;
     }
-    
+
     .content-left {
         gap: 0.875rem;
     }
-    
+
     .video-header {
         padding: 0.45rem 0.75rem;
     }
-    
+
     .video-container {
         aspect-ratio: 16 / 9;
     }
-    
+
     .product-card {
         padding: 0.875rem;
     }
-    
+
     .product-main {
         flex-direction: column;
         align-items: flex-start;
         gap: 0.75rem;
     }
-    
+
     .product-image-main {
         width: 100%;
         max-width: 140px;
         height: auto;
         aspect-ratio: 4 / 3;
     }
-    
+
     .product-info {
         width: 100%;
     }
-    
+
     .product-price {
         font-size: 1.5rem;
     }
-    
+
     .product-thumbnails {
         flex-wrap: wrap;
     }
-    
+
     .thumb {
         width: 48px;
         height: 40px;
     }
-    
+
     .sidebar {
         gap: 0.875rem;
     }
-    
+
     .chat-section,
     .auction-section {
         padding: 0.75rem;
     }
-    
+
     .chat-input-wrap {
         flex-direction: column;
     }
-    
+
     .chat-input-wrap .input-username {
         width: 100%;
     }
-    
+
     .chat-input-wrap .input-chat {
         width: 100%;
         min-width: 0;
     }
-    
+
     .bid-input-wrap {
         flex-direction: column;
     }
-    
+
     .bid-input-wrap .btn-small,
     .bid-input-wrap .input-bid {
         width: 100%;
     }
-    
+
     .chat-messages {
         min-height: 100px;
         max-height: 140px;
     }
-    
+
     .bids-list {
         min-height: 60px;
     }

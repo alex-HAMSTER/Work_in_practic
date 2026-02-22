@@ -18,21 +18,22 @@
         return `${protocol}//${window.location.host}/ws`;
     }
 
-    function setStatus(text) {
-        statusEl.textContent = text;
+    function setStatus(tokenKey, fallback) {
+        statusEl.setAttribute("data-i18n", tokenKey);
+        statusEl.textContent = window.t(tokenKey) || fallback;
     }
 
     async function startStream() {
         try {
             stream = await navigator.mediaDevices.getUserMedia({ video: true });
             video.srcObject = stream;
-            setStatus("Камера включена. Подключаюсь к серверу...");
+            setStatus("status_connecting", "Камера включена. Подключаюсь к серверу...");
 
             ws = new WebSocket(getWsUrl());
 
             ws.onopen = () => {
                 ws.send(JSON.stringify({ type: "join", role: "streamer" }));
-                setStatus("Стрим идёт! Зрители видят ваше видео.");
+                setStatus("status_live", "Стрим идёт! Зрители видят ваше видео.");
                 startBtn.style.display = "none";
                 stopBtn.style.display = "inline-block";
                 var started = false;
@@ -49,19 +50,20 @@
                 if (video.videoWidth > 0 && video.videoHeight > 0) {
                     startWhenReady();
                 } else {
-                    video.play().catch(function () {});
+                    video.play().catch(function () { });
                     setTimeout(startWhenReady, 50);
                     setTimeout(startWhenReady, 150);
                 }
             };
 
-            ws.onerror = () => setStatus("Ошибка WebSocket");
+            ws.onerror = () => setStatus("status_ws_error", "Ошибка WebSocket");
             ws.onclose = () => {
                 stopCapture();
-                setStatus("Соединение закрыто");
+                setStatus("status_ws_closed", "Соединение закрыто");
             };
         } catch (err) {
-            setStatus("Ошибка: " + (err.message || "Нет доступа к камере"));
+            statusEl.removeAttribute("data-i18n");
+            statusEl.textContent = window.t('status_error') + (err.message || window.t('status_no_camera'));
         }
     }
 
@@ -117,9 +119,16 @@
         video.srcObject = null;
         startBtn.style.display = "inline-block";
         stopBtn.style.display = "none";
-        setStatus("Стрим остановлен. Нажмите «Запустить стрим» снова.");
+        setStatus("status_stopped", "Стрим остановлен. Нажмите «Запустить стрим» снова.");
     }
 
     startBtn.addEventListener("click", startStream);
     stopBtn.addEventListener("click", stopStream);
+
+    window.addEventListener('languageChanged', () => {
+        if (statusEl.hasAttribute("data-i18n")) {
+            statusEl.textContent = window.t(statusEl.getAttribute("data-i18n"));
+        }
+    });
+
 })();

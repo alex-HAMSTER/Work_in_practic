@@ -46,7 +46,7 @@
             setTimeout(connect, 1000);
         };
 
-        ws.onerror = () => {};
+        ws.onerror = () => { };
     }
 
     function handleMessage(msg) {
@@ -59,6 +59,7 @@
                 }
                 break;
             case "viewers":
+                window.lastViewerCount = msg.count;
                 viewerCount.textContent = formatViewers(msg.count);
                 break;
             case "chat":
@@ -68,6 +69,7 @@
                 appendBid(msg.username, msg.amount);
                 break;
             case "price":
+                window.lastCurrentPrice = msg.current;
                 productPrice.textContent = "$" + msg.current;
                 bidAmount.min = msg.current + 1;
                 bidAmount.placeholder = "$" + (msg.current + 1);
@@ -77,7 +79,7 @@
                     streamImage.style.display = "none";
                     streamImage.src = "";
                     placeholder.style.display = "flex";
-                    placeholder.querySelector("p").textContent = "Ожидание стрима...";
+                    placeholder.querySelector("p").textContent = window.t('waiting_stream');
                 }
                 break;
         }
@@ -85,9 +87,9 @@
 
     function formatViewers(n) {
         if (n >= 1000) {
-            return (n / 1000).toFixed(1) + "K viewers";
+            return (n / 1000).toFixed(1) + " " + window.t('k_viewers');
         }
-        return n + " viewers";
+        return n + " " + window.t('viewers');
     }
 
     function appendChat(name, text) {
@@ -167,14 +169,29 @@
     document.querySelectorAll(".thumb").forEach(function (thumb) {
         thumb.addEventListener("click", function () {
             var src = this.getAttribute("src");
-            var name = this.getAttribute("data-name");
+            var nameKey = this.getAttribute("data-name");
             mainImage.src = src;
-            productTitle.textContent = name;
+            productTitle.textContent = window.t(nameKey);
+            productTitle.setAttribute("data-i18n", nameKey);
             document.querySelectorAll(".thumb").forEach(function (t) {
                 t.classList.remove("thumb-active");
             });
             this.classList.add("thumb-active");
         });
+    });
+
+    window.addEventListener('languageChanged', () => {
+        if (window.lastViewerCount !== undefined) {
+            viewerCount.textContent = formatViewers(window.lastViewerCount);
+        }
+        if (placeholder.style.display !== "none") {
+            placeholder.querySelector("p").textContent = window.t('waiting_stream');
+        }
+        // update thumbnail titles
+        var activeThumb = document.querySelector(".thumb-active");
+        if (activeThumb) {
+            productTitle.textContent = window.t(activeThumb.getAttribute("data-name"));
+        }
     });
 
     connect();

@@ -1,79 +1,110 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#0a0a0c">
-    <title>Live Stream — Аукцион</title>
+    <title data-i18n="title_stream">Live Stream — Аукцион</title>
     <link rel="stylesheet" href="/static/css/styles.css">
 </head>
+
 <body class="stream-page">
     <header class="header">
         <nav class="nav">
-            <a href="#" class="nav-link">MENU</a>
-            <a href="#" class="nav-link">SHOP</a>
-            <a href="/stream" class="nav-link nav-link-active">STREAM</a>
+            <a href="#" class="nav-link" data-i18n="nav_menu">MENU</a>
+            <a href="#" class="nav-link" data-i18n="nav_shop">SHOP</a>
+            <div class="lang-dropdown">
+                <button class="lang-dropdown-btn" aria-haspopup="true" aria-expanded="false">
+                    <img src="/static/img/localisation/Flag_of_Ukraine.svg.png" alt="UA" class="lang-flag"
+                        id="currentLangFlag">
+                    <span id="currentLangText">UA</span>
+                    <span class="lang-arrow">▼</span>
+                </button>
+                <ul class="lang-dropdown-menu">
+                    <li class="lang-option" data-lang="uk">
+                        <img src="/static/img/localisation/Flag_of_Ukraine.svg.png" alt="UA" class="lang-flag">
+                        <span>Українська</span>
+                    </li>
+                    <li class="lang-option" data-lang="en">
+                        <img src="/static/img/localisation/Flag_of_the_United_Kingdom.webp" alt="EN" class="lang-flag">
+                        <span>English</span>
+                    </li>
+                    <li class="lang-option" data-lang="da">
+                        <img src="/static/img/localisation/Flag_of_Denmark.svg.webp" alt="DA" class="lang-flag">
+                        <span>Dansk</span>
+                    </li>
+                </ul>
+            </div>
         </nav>
-        <button class="btn-login">Log In</button>
+        <button class="btn-login" data-i18n="btn_login">Log In</button>
     </header>
 
     <div class="main-layout">
         <section class="content-left">
             <div class="video-section">
                 <div class="video-header">
-                    <span class="live-badge">LIVE</span>
-                    <span id="viewerCount" class="viewer-count">0 viewers</span>
+                    <span class="live-badge" data-i18n="badge_live">LIVE</span>
+                    <span id="viewerCount" class="viewer-count">0 <span data-i18n="viewers">viewers</span></span>
                 </div>
                 <div class="video-container">
                     <img id="streamImage" class="stream-image" src="" alt="Live stream" style="display: none;">
                     <div id="placeholder" class="video-placeholder">
                         <span class="play-icon">▶</span>
-                        <p>Ожидание стрима...</p>
+                        <p data-i18n="waiting_stream">Ожидание стрима...</p>
                     </div>
                 </div>
             </div>
 
             <section class="product-card">
-                <h2 id="productTitle" class="product-title">Кофта</h2>
+                <h2 id="productTitle" class="product-title" data-i18n="product_sweater">Кофта</h2>
                 <div class="product-main">
                     <div class="product-image">
-                        <img id="mainProductImage" src="/static/img/item_1.jpg" alt="Product" class="product-image-main">
+                        <img id="mainProductImage" src="/static/img/item_1.jpg" alt="Product"
+                            class="product-image-main">
                     </div>
                     <div class="product-info">
                         <p id="productPrice" class="product-price">$1</p>
-                        <button id="buyNowBtn" class="btn btn-primary">BUY NOW</button>
+                        <button id="buyNowBtn" class="btn btn-primary" data-i18n="btn_buy_now">BUY NOW</button>
                     </div>
                 </div>
                 <div class="product-thumbnails">
-                    <img src="/static/img/item_1.jpg" alt="Кофта" class="thumb thumb-active" data-name="Кофта">
-                    <img src="/static/img/item_2.jpg" alt="Варежки" class="thumb" data-name="Варежки" onerror="this.src='/static/img/item_1.jpg'">
-                    <img src="/static/img/item_3.jpg" alt="Мыло" class="thumb" data-name="Мыло" onerror="this.src='/static/img/item_1.jpg'">
+                    <img src="/static/img/item_1.jpg" alt="Кофта" class="thumb thumb-active"
+                        data-name="product_sweater">
+                    <img src="/static/img/item_2.jpg" alt="Варежки" class="thumb" data-name="product_mittens"
+                        onerror="this.src='/static/img/item_1.jpg'">
+                    <img src="/static/img/item_3.jpg" alt="Мыло" class="thumb" data-name="product_soap"
+                        onerror="this.src='/static/img/item_1.jpg'">
                 </div>
             </section>
         </section>
 
         <aside class="sidebar">
             <div class="chat-section">
-                <h3 class="section-title">Chat</h3>
+                <h3 class="section-title" data-i18n="title_chat">Chat</h3>
                 <div id="chatMessages" class="chat-messages"></div>
                 <div class="chat-input-wrap">
-                    <input type="text" id="usernameInput" class="input-username" placeholder="Ваше имя" maxlength="30">
-                    <input type="text" id="chatInput" class="input-chat" placeholder="Send a message...">
-                    <button id="sendChatBtn" class="btn btn-small">Send</button>
+                    <input type="text" id="usernameInput" class="input-username" placeholder="Ваше имя" maxlength="30"
+                        data-i18n="placeholder_username">
+                    <input type="text" id="chatInput" class="input-chat" placeholder="Send a message..."
+                        data-i18n="placeholder_chat">
+                    <button id="sendChatBtn" class="btn btn-small" data-i18n="btn_send">Send</button>
                 </div>
             </div>
 
             <div class="auction-section">
-                <h3 class="section-title">Live Auction</h3>
+                <h3 class="section-title" data-i18n="title_auction">Live Auction</h3>
                 <div id="bidsList" class="bids-list"></div>
                 <div class="bid-input-wrap">
-                    <button id="placeBidBtn" class="btn btn-small">Place Bid</button>
+                    <button id="placeBidBtn" class="btn btn-small" data-i18n="btn_place_bid">Place Bid</button>
                     <input type="number" id="bidAmount" class="input-bid" placeholder="$" min="1" value="2">
                 </div>
             </div>
         </aside>
     </div>
 
+    <script src="/static/js/i18n.js"></script>
     <script src="/static/js/stream.js"></script>
 </body>
+
 </html>
