@@ -29,5 +29,6 @@
     "status_ws_closed": "Forbindelse lukket",
     "status_error": "Fejl: ",
     "status_no_camera": "Ingen kameraadgang",
-    "status_stopped": "Stream stoppet. Klik på \"Start stream\" igen."
+    "status_stopped": "Stream stoppet. Klik på \"Start stream\" igen.",
+    "btn_logout": "Log ud"
 }

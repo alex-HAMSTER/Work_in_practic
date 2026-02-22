@@ -208,6 +208,109 @@ body {
     border-color: var(--text-muted);
 }
 
+/* User auth menu */
+.user-menu {
+    position: relative;
+    display: inline-block;
+}
+
+.user-avatar-btn {
+    background: none;
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.user-avatar-btn:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.2);
+}
+
+.user-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.user-avatar-placeholder {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+    text-transform: uppercase;
+}
+
+.user-menu-dropdown {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    min-width: 200px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: all var(--transition);
+    z-index: 200;
+    overflow: hidden;
+}
+
+.user-menu-dropdown.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.user-menu-info {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.user-menu-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-menu-email {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 0.15rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-menu-logout {
+    display: block;
+    width: 100%;
+    padding: 0.6rem 1rem;
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-size: 0.875rem;
+    text-align: left;
+    cursor: pointer;
+    transition: background var(--transition);
+}
+
+.user-menu-logout:hover {
+    background: var(--bg-input);
+}
+
 /* Main layout */
 .main-layout {
     display: flex;

@@ -26,11 +26,13 @@
         username = u;
 
         ws.onopen = () => {
+            window._activeWs = ws;
             ws.send(JSON.stringify({
                 type: "join",
                 role: "viewer",
                 username: u
             }));
+            window.dispatchEvent(new Event('wsReady'));
         };
 
         ws.onmessage = (event) => {

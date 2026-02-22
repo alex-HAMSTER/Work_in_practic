@@ -7,6 +7,7 @@
     <meta name="theme-color" content="#0a0a0c">
     <title data-i18n="title_start_stream">Запустить стрим</title>
     <link rel="stylesheet" href="/static/css/styles.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         .streamer-header {
             display: flex;
@@ -28,27 +29,31 @@
     <main class="streamer-container">
         <div class="streamer-header">
             <h1 data-i18n="header_streamer">Стример</h1>
-            <div class="lang-dropdown">
-                <button class="lang-dropdown-btn" aria-haspopup="true" aria-expanded="false">
-                    <img src="/static/img/localisation/Flag_of_Ukraine.svg.png" alt="UA" class="lang-flag"
-                        id="currentLangFlag">
-                    <span id="currentLangText">UA</span>
-                    <span class="lang-arrow">▼</span>
-                </button>
-                <ul class="lang-dropdown-menu">
-                    <li class="lang-option" data-lang="uk">
-                        <img src="/static/img/localisation/Flag_of_Ukraine.svg.png" alt="UA" class="lang-flag">
-                        <span>Українська</span>
-                    </li>
-                    <li class="lang-option" data-lang="en">
-                        <img src="/static/img/localisation/Flag_of_the_United_Kingdom.webp" alt="EN" class="lang-flag">
-                        <span>English</span>
-                    </li>
-                    <li class="lang-option" data-lang="da">
-                        <img src="/static/img/localisation/Flag_of_Denmark.svg.webp" alt="DA" class="lang-flag">
-                        <span>Dansk</span>
-                    </li>
-                </ul>
+            <div style="display:flex;align-items:center;gap:0.75rem;">
+                <div class="lang-dropdown">
+                    <button class="lang-dropdown-btn" aria-haspopup="true" aria-expanded="false">
+                        <img src="/static/img/localisation/Flag_of_Ukraine.svg.png" alt="UA" class="lang-flag"
+                            id="currentLangFlag">
+                        <span id="currentLangText">UA</span>
+                        <span class="lang-arrow">▼</span>
+                    </button>
+                    <ul class="lang-dropdown-menu">
+                        <li class="lang-option" data-lang="uk">
+                            <img src="/static/img/localisation/Flag_of_Ukraine.svg.png" alt="UA" class="lang-flag">
+                            <span>Українська</span>
+                        </li>
+                        <li class="lang-option" data-lang="en">
+                            <img src="/static/img/localisation/Flag_of_the_United_Kingdom.webp" alt="EN"
+                                class="lang-flag">
+                            <span>English</span>
+                        </li>
+                        <li class="lang-option" data-lang="da">
+                            <img src="/static/img/localisation/Flag_of_Denmark.svg.webp" alt="DA" class="lang-flag">
+                            <span>Dansk</span>
+                        </li>
+                    </ul>
+                </div>
+                <div id="authContainer"></div>
             </div>
         </div>
         <video id="localVideo" autoplay playsinline muted></video>
@@ -62,6 +67,7 @@
             камере</p>
     </main>
     <script src="/static/js/i18n.js"></script>
+    <script src="/static/js/auth.js"></script>
     <script src="/static/js/start_stream.js"></script>
 </body>
 
