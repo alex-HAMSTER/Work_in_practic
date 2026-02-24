@@ -5,67 +5,101 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#0a0a0c">
-    <title data-i18n="title_start_stream">Запустить стрим</title>
+    <title data-i18n="title_start_stream">Запустить стрім</title>
     <link rel="stylesheet" href="/static/css/styles.css">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <style>
-        .streamer-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            margin-bottom: 20px;
-        }
-
-        .streamer-header h1 {
-            margin: 0;
-            color: white;
-            flex-grow: 1;
-        }
-    </style>
 </head>
 
-<body class="streamer-page">
-    <main class="streamer-container">
-        <div class="streamer-header">
-            <h1 data-i18n="header_streamer">Стример</h1>
-            <div style="display:flex;align-items:center;gap:0.75rem;">
-                <div class="lang-dropdown">
-                    <button class="lang-dropdown-btn" aria-haspopup="true" aria-expanded="false">
-                        <img src="/static/img/localisation/Flag_of_Ukraine.svg.png" alt="UA" class="lang-flag"
-                            id="currentLangFlag">
-                        <span id="currentLangText">UA</span>
-                        <span class="lang-arrow">▼</span>
-                    </button>
-                    <ul class="lang-dropdown-menu">
-                        <li class="lang-option" data-lang="uk">
-                            <img src="/static/img/localisation/Flag_of_Ukraine.svg.png" alt="UA" class="lang-flag">
-                            <span>Українська</span>
-                        </li>
-                        <li class="lang-option" data-lang="en">
-                            <img src="/static/img/localisation/Flag_of_the_United_Kingdom.webp" alt="EN"
-                                class="lang-flag">
-                            <span>English</span>
-                        </li>
-                        <li class="lang-option" data-lang="da">
-                            <img src="/static/img/localisation/Flag_of_Denmark.svg.webp" alt="DA" class="lang-flag">
-                            <span>Dansk</span>
-                        </li>
-                    </ul>
-                </div>
-                <div id="authContainer"></div>
+<body class="streamer-page streamer-dashboard">
+
+    <!-- Top bar -->
+    <header class="streamer-topbar">
+        <div class="streamer-topbar-left">
+            <h1 class="streamer-title" data-i18n="header_streamer">Стример</h1>
+            <div class="streamer-badges">
+                <span id="streamBadge" class="stream-offline-badge" data-i18n="badge_offline">● ОФЛАЙН</span>
+                <span id="streamerViewerCount" class="viewer-count-badge">0 <span
+                        data-i18n="viewers">viewers</span></span>
             </div>
         </div>
-        <video id="localVideo" autoplay playsinline muted></video>
-        <canvas id="captureCanvas" style="display: none;"></canvas>
-        <div class="streamer-controls">
-            <button id="startBtn" class="btn btn-primary" data-i18n="btn_start_stream">Запустить стрим</button>
-            <button id="stopBtn" class="btn btn-secondary" style="display: none;" data-i18n="btn_stop_stream">Остановить
-                стрим</button>
+        <div class="streamer-topbar-right">
+            <div class="lang-dropdown">
+                <button class="lang-dropdown-btn" aria-haspopup="true" aria-expanded="false">
+                    <img src="/static/img/localisation/Flag_of_Ukraine.svg.png" alt="UA" class="lang-flag"
+                        id="currentLangFlag">
+                    <span id="currentLangText">UA</span>
+                    <span class="lang-arrow">▼</span>
+                </button>
+                <ul class="lang-dropdown-menu">
+                    <li class="lang-option" data-lang="uk">
+                        <img src="/static/img/localisation/Flag_of_Ukraine.svg.png" alt="UA" class="lang-flag">
+                        <span>Українська</span>
+                    </li>
+                    <li class="lang-option" data-lang="en">
+                        <img src="/static/img/localisation/Flag_of_the_United_Kingdom.webp" alt="EN" class="lang-flag">
+                        <span>English</span>
+                    </li>
+                    <li class="lang-option" data-lang="da">
+                        <img src="/static/img/localisation/Flag_of_Denmark.svg.webp" alt="DA" class="lang-flag">
+                        <span>Dansk</span>
+                    </li>
+                </ul>
+            </div>
+            <div id="authContainer"></div>
         </div>
-        <p id="status" class="status-text" data-i18n="status_initial">Нажмите "Запустить стрим" и разрешите доступ к
-            камере</p>
-    </main>
+    </header>
+
+    <!-- Main dashboard -->
+    <div class="streamer-dashboard-layout">
+
+        <!-- Left: camera + controls -->
+        <section class="streamer-left">
+            <div class="streamer-video-wrap">
+                <video id="localVideo" autoplay playsinline muted></video>
+                <canvas id="captureCanvas" style="display: none;"></canvas>
+                <div class="streamer-video-overlay" id="cameraPlaceholder">
+                    <span class="play-icon">📷</span>
+                    <p data-i18n="status_initial">Натисніть «Запустити стрім»</p>
+                </div>
+            </div>
+            <div class="streamer-controls">
+                <button id="startBtn" class="btn btn-primary btn-streamer" data-i18n="btn_start_stream">Запустити
+                    стрім</button>
+                <button id="stopBtn" class="btn btn-secondary btn-streamer" style="display: none;"
+                    data-i18n="btn_stop_stream">Зупинити стрім</button>
+            </div>
+            <p id="status" class="status-text" data-i18n="status_initial">Натисніть "Запустити стрім" та дозвольте
+                доступ до камери</p>
+        </section>
+
+        <!-- Right: chat + auction -->
+        <aside class="streamer-right">
+
+            <!-- Live Auction panel -->
+            <div class="streamer-panel">
+                <div class="streamer-panel-header">
+                    <span class="panel-icon">🏷️</span>
+                    <h3 class="section-title" data-i18n="title_auction">Live Auction</h3>
+                </div>
+                <p class="current-price-label">
+                    <span data-i18n="current_price">Поточна ціна:</span>
+                    <strong id="streamerPrice" class="current-price-value">$1</strong>
+                </p>
+                <div id="streamerBidsList" class="bids-list bids-list-streamer"></div>
+            </div>
+
+            <!-- Chat panel -->
+            <div class="streamer-panel streamer-chat-panel">
+                <div class="streamer-panel-header">
+                    <span class="panel-icon">💬</span>
+                    <h3 class="section-title" data-i18n="title_chat">Chat</h3>
+                </div>
+                <div id="streamerChatMessages" class="chat-messages streamer-chat-messages"></div>
+            </div>
+
+        </aside>
+    </div>
+
     <script src="/static/js/i18n.js"></script>
     <script src="/static/js/auth.js"></script>
     <script src="/static/js/start_stream.js"></script>

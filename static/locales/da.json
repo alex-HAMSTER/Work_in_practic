@@ -30,5 +30,7 @@
     "status_error": "Fejl: ",
     "status_no_camera": "Ingen kameraadgang",
     "status_stopped": "Stream stoppet. Klik på \"Start stream\" igen.",
-    "btn_logout": "Log ud"
+    "btn_logout": "Log ud",
+    "badge_offline": "OFFLINE",
+    "current_price": "Aktuel pris:"
 }

@@ -30,5 +30,7 @@
     "status_error": "Error: ",
     "status_no_camera": "No camera access",
     "status_stopped": "Stream stopped. Click \"Start stream\" again.",
-    "btn_logout": "Log out"
+    "btn_logout": "Log out",
+    "badge_offline": "OFFLINE",
+    "current_price": "Current price:"
 }

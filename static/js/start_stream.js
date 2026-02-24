@@ -5,13 +5,20 @@
     const startBtn = document.getElementById("startBtn");
     const stopBtn = document.getElementById("stopBtn");
     const statusEl = document.getElementById("status");
+    const cameraPlaceholder = document.getElementById("cameraPlaceholder");
+
+    // Dashboard elements
+    const streamerChatMessages = document.getElementById("streamerChatMessages");
+    const streamerBidsList = document.getElementById("streamerBidsList");
+    const streamerPrice = document.getElementById("streamerPrice");
+    const streamBadge = document.getElementById("streamBadge");
+    const streamerViewerCount = document.getElementById("streamerViewerCount");
 
     let stream = null;
     let ws = null;
     let captureInterval = null;
     const FPS = 60;
     const INTERVAL_MS = 1000 / FPS;
-    console.log("INTERVAL_MS", INTERVAL_MS);
 
     function getWsUrl() {
         const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
@@ -23,19 +30,72 @@
         statusEl.textContent = window.t(tokenKey) || fallback;
     }
 
+    function setBadgeLive(isLive) {
+        if (isLive) {
+            streamBadge.textContent = "● " + (window.t('badge_live') || 'LIVE');
+            streamBadge.className = "stream-live-badge";
+        } else {
+            streamBadge.textContent = "● " + (window.t('badge_offline') || 'ОФЛАЙН');
+            streamBadge.className = "stream-offline-badge";
+        }
+    }
+
+    function escapeHtml(s) {
+        const d = document.createElement("div");
+        d.textContent = s;
+        return d.innerHTML;
+    }
+
+    function appendChat(name, text) {
+        const el = document.createElement("div");
+        el.className = "chat-message";
+        el.innerHTML = `<span class="chat-username">${escapeHtml(name)}:</span> ${escapeHtml(text)}`;
+        streamerChatMessages.appendChild(el);
+        streamerChatMessages.scrollTop = streamerChatMessages.scrollHeight;
+    }
+
+    function appendBid(name, amount) {
+        const el = document.createElement("div");
+        el.className = "bid-item";
+        el.innerHTML = `<span class="bid-user">${escapeHtml(name)}</span> <span class="bid-amount">$${amount}</span>`;
+        streamerBidsList.insertBefore(el, streamerBidsList.firstChild);
+    }
+
+    function handleWsMessage(msg) {
+        switch (msg.type) {
+            case "chat":
+                appendChat(msg.username, msg.text);
+                break;
+            case "bid":
+                appendBid(msg.username, msg.amount);
+                break;
+            case "price":
+                if (streamerPrice) streamerPrice.textContent = "$" + msg.current;
+                break;
+            case "viewers":
+                if (streamerViewerCount) {
+                    streamerViewerCount.innerHTML = msg.count + ' <span data-i18n="viewers">' + window.t('viewers') + '</span>';
+                }
+                break;
+        }
+    }
+
     async function startStream() {
         try {
             stream = await navigator.mediaDevices.getUserMedia({ video: true });
             video.srcObject = stream;
-            setStatus("status_connecting", "Камера включена. Подключаюсь к серверу...");
+            if (cameraPlaceholder) cameraPlaceholder.style.display = "none";
+            setStatus("status_connecting", "Камера ввімкнена. Підключаюсь до сервера...");
 
             ws = new WebSocket(getWsUrl());
 
             ws.onopen = () => {
                 ws.send(JSON.stringify({ type: "join", role: "streamer" }));
-                setStatus("status_live", "Стрим идёт! Зрители видят ваше видео.");
+                setStatus("status_live", "Стрім іде! Глядачі бачать ваше відео.");
+                setBadgeLive(true);
                 startBtn.style.display = "none";
                 stopBtn.style.display = "inline-block";
+
                 var started = false;
                 var startWhenReady = function () {
                     if (!started && video.videoWidth > 0 && video.videoHeight > 0) {
@@ -56,10 +116,20 @@
                 }
             };
 
-            ws.onerror = () => setStatus("status_ws_error", "Ошибка WebSocket");
+            ws.onmessage = (event) => {
+                try {
+                    const msg = JSON.parse(event.data);
+                    handleWsMessage(msg);
+                } catch (e) {
+                    console.warn("WS parse error:", e);
+                }
+            };
+
+            ws.onerror = () => setStatus("status_ws_error", "Помилка WebSocket");
             ws.onclose = () => {
                 stopCapture();
-                setStatus("status_ws_closed", "Соединение закрыто");
+                setBadgeLive(false);
+                setStatus("status_ws_closed", "З'єднання закрито");
             };
         } catch (err) {
             statusEl.removeAttribute("data-i18n");
@@ -117,9 +187,11 @@
             stream = null;
         }
         video.srcObject = null;
+        if (cameraPlaceholder) cameraPlaceholder.style.display = "flex";
         startBtn.style.display = "inline-block";
         stopBtn.style.display = "none";
-        setStatus("status_stopped", "Стрим остановлен. Нажмите «Запустить стрим» снова.");
+        setBadgeLive(false);
+        setStatus("status_stopped", "Стрім зупинено. Натисніть «Запустити стрім» знову.");
     }
 
     startBtn.addEventListener("click", startStream);
@@ -129,6 +201,7 @@
         if (statusEl.hasAttribute("data-i18n")) {
             statusEl.textContent = window.t(statusEl.getAttribute("data-i18n"));
         }
+        setBadgeLive(streamBadge.classList.contains("stream-live-badge"));
     });
 
 })();

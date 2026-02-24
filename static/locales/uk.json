@@ -30,5 +30,7 @@
   "status_error": "Помилка: ",
   "status_no_camera": "Немає доступу до камери",
   "status_stopped": "Стрім зупинено. Натисніть «Запустити стрім» знову.",
-  "btn_logout": "Вийти"
+  "btn_logout": "Вийти",
+  "badge_offline": "ОФЛАЙН",
+  "current_price": "Поточна ціна:"
 }
