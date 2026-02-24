@@ -1,3 +1,4 @@
+import asyncio
 import json
 import logging
 import uuid
@@ -14,6 +15,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from config import GOOGLE_CLIENT_ID, SESSION_EXPIRE_DAYS
 from database import get_db, init_db
+from email_service import notify_stream_started
 from models import Session as DBSession, User
 
 logging.basicConfig(level=logging.INFO)
@@ -173,6 +175,8 @@ class ConnectionManager:
         self.chat_messages: List[dict] = []
         self.bids: List[dict] = []
         self.usernames: dict = {}  # websocket id -> username
+        self.banned_users: set = set()  # set of banned usernames
+        self.viewer_ws_by_username: dict = {}  # username -> list of websockets
 
     async def connect_streamer(self, websocket: WebSocket) -> None:
         if self.streamer:
@@ -191,12 +195,20 @@ class ConnectionManager:
     async def connect_viewer(self, websocket: WebSocket, username: str = "Anonymous") -> None:
         self.viewers.append(websocket)
         self.usernames[id(websocket)] = username
+        # Track ws by username for ban notifications
+        self.viewer_ws_by_username.setdefault(username, []).append(websocket)
         await self.broadcast_viewer_count()
 
     def disconnect_viewer(self, websocket: WebSocket) -> None:
         if websocket in self.viewers:
             self.viewers.remove(websocket)
-        self.usernames.pop(id(websocket), None)
+        uname = self.usernames.pop(id(websocket), None)
+        if uname and uname in self.viewer_ws_by_username:
+            wss = self.viewer_ws_by_username[uname]
+            if websocket in wss:
+                wss.remove(websocket)
+            if not wss:
+                del self.viewer_ws_by_username[uname]
 
     def get_viewer_count(self) -> int:
         count = len(self.viewers)
@@ -265,6 +277,43 @@ class ConnectionManager:
             except Exception:
                 pass
 
+    def is_banned(self, username: str) -> bool:
+        return username in self.banned_users
+
+    async def ban_user(self, username: str) -> None:
+        self.banned_users.add(username)
+        logger.info("Banned user: %s", username)
+        # Notify the banned viewer(s)
+        ban_msg = {"type": "you_are_banned", "banned": True}
+        for ws in self.viewer_ws_by_username.get(username, []):
+            try:
+                await ws.send_json(ban_msg)
+            except Exception:
+                pass
+        # Notify streamer about updated ban list
+        if self.streamer:
+            try:
+                await self.streamer.send_json({"type": "ban_list", "banned": list(self.banned_users)})
+            except Exception:
+                pass
+
+    async def unban_user(self, username: str) -> None:
+        self.banned_users.discard(username)
+        logger.info("Unbanned user: %s", username)
+        # Notify the unbanned viewer(s)
+        unban_msg = {"type": "you_are_banned", "banned": False}
+        for ws in self.viewer_ws_by_username.get(username, []):
+            try:
+                await ws.send_json(unban_msg)
+            except Exception:
+                pass
+        # Notify streamer about updated ban list
+        if self.streamer:
+            try:
+                await self.streamer.send_json({"type": "ban_list", "banned": list(self.banned_users)})
+            except Exception:
+                pass
+
 
 manager = ConnectionManager()
 
@@ -315,26 +364,52 @@ async def websocket_endpoint(websocket: WebSocket, db: AsyncSession = Depends(ge
                     await manager.broadcast_live_status(True)
                     await websocket.send_json({"type": "price", "current": manager.current_price})
                     await websocket.send_json({"type": "viewers", "count": manager.get_viewer_count()})
+                    # Send current ban list
+                    await websocket.send_json({"type": "ban_list", "banned": list(manager.banned_users)})
                     for m in manager.chat_messages[-20:]:
                         await websocket.send_json(m)
                     for b in manager.bids[-10:]:
                         await websocket.send_json(b)
+                    # Send email notifications to all registered users (fire-and-forget)
+                    async def _send_emails():
+                        from database import AsyncSessionLocal
+                        async with AsyncSessionLocal() as email_db:
+                            result = await email_db.execute(select(User))
+                            all_users = result.scalars().all()
+                            user_list = [{"email": u.email, "name": u.name} for u in all_users]
+                        if user_list:
+                            await notify_stream_started(user_list)
+                    asyncio.create_task(_send_emails())
                 else:
                     await manager.connect_viewer(websocket, username)
                     await websocket.send_json({"type": "price", "current": manager.current_price})
                     await websocket.send_json({"type": "live_status", "is_live": manager.streamer is not None})
+                    # Check if this user is banned
+                    if manager.is_banned(username):
+                        await websocket.send_json({"type": "you_are_banned", "banned": True})
                     for m in manager.chat_messages[-20:]:
                         await websocket.send_json(m)
                     for b in manager.bids[-10:]:
                         await websocket.send_json(b)
 
             elif msg_type == "set_username":
-                # Sent by auth.js after session resolves — update username for this WS session
                 new_name = msg.get("username", "").strip()
                 if new_name:
+                    old_name = username
                     username = new_name
                     if role == "viewer":
                         manager.usernames[id(websocket)] = new_name
+                        # Update ws tracking
+                        if old_name and old_name in manager.viewer_ws_by_username:
+                            wss = manager.viewer_ws_by_username[old_name]
+                            if websocket in wss:
+                                wss.remove(websocket)
+                            if not wss:
+                                del manager.viewer_ws_by_username[old_name]
+                        manager.viewer_ws_by_username.setdefault(new_name, []).append(websocket)
+                        # Check if new name is banned
+                        if manager.is_banned(new_name):
+                            await websocket.send_json({"type": "you_are_banned", "banned": True})
 
             elif msg_type == "frame" and role == "streamer":
                 frame_data = msg.get("data", "")
@@ -343,12 +418,16 @@ async def websocket_endpoint(websocket: WebSocket, db: AsyncSession = Depends(ge
 
             elif msg_type == "chat":
                 u = username or msg.get("username", "Anonymous")
+                if manager.is_banned(u):
+                    continue
                 text = msg.get("text", "").strip()
                 if text:
                     await manager.broadcast_chat(u, text)
 
             elif msg_type == "bid":
                 u = username or msg.get("username", "Anonymous")
+                if manager.is_banned(u):
+                    continue
                 amount = msg.get("amount")
                 try:
                     amount = int(amount)
@@ -361,9 +440,21 @@ async def websocket_endpoint(websocket: WebSocket, db: AsyncSession = Depends(ge
 
             elif msg_type == "buy_now":
                 u = username or msg.get("username", "Anonymous")
+                if manager.is_banned(u):
+                    continue
                 manager.current_price += 1
                 await manager.broadcast_bid(u, manager.current_price)
                 await manager.broadcast_price(manager.current_price)
+
+            elif msg_type == "ban_user" and role == "streamer":
+                target = msg.get("username", "").strip()
+                if target:
+                    await manager.ban_user(target)
+
+            elif msg_type == "unban_user" and role == "streamer":
+                target = msg.get("username", "").strip()
+                if target:
+                    await manager.unban_user(target)
 
     except WebSocketDisconnect:
         pass

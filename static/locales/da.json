@@ -32,5 +32,10 @@
     "status_stopped": "Stream stoppet. Klik på \"Start stream\" igen.",
     "btn_logout": "Log ud",
     "badge_offline": "OFFLINE",
-    "current_price": "Aktuel pris:"
+    "current_price": "Aktuel pris:",
+    "btn_ban": "Blokér",
+    "btn_unban": "Fjern blokering",
+    "label_banned": "blokeret",
+    "banned_chat_placeholder": "Du er blokeret",
+    "ban_notice": "Du er blokeret af moderator. Chat og bud er ikke tilg\u00e6ngelige."
 }

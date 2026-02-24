@@ -5,3 +5,4 @@ aiosqlite==0.20.0
 google-auth==2.28.0
 requests==2.31.0
 python-multipart==0.0.9
+aiosmtplib==3.0.1

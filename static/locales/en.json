@@ -32,5 +32,10 @@
     "status_stopped": "Stream stopped. Click \"Start stream\" again.",
     "btn_logout": "Log out",
     "badge_offline": "OFFLINE",
-    "current_price": "Current price:"
+    "current_price": "Current price:",
+    "btn_ban": "Block",
+    "btn_unban": "Unblock",
+    "label_banned": "blocked",
+    "banned_chat_placeholder": "You are blocked",
+    "ban_notice": "You have been blocked by the moderator. Chat and bids are unavailable."
 }

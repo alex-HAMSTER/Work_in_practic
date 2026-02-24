@@ -17,6 +17,7 @@
     let stream = null;
     let ws = null;
     let captureInterval = null;
+    let bannedUsers = new Set();
     const FPS = 60;
     const INTERVAL_MS = 1000 / FPS;
 
@@ -48,8 +49,62 @@
 
     function appendChat(name, text) {
         const el = document.createElement("div");
-        el.className = "chat-message";
-        el.innerHTML = `<span class="chat-username">${escapeHtml(name)}:</span> ${escapeHtml(text)}`;
+        el.className = "chat-message chat-message-mod";
+        el.dataset.username = name;
+
+        const isBanned = bannedUsers.has(name);
+
+        el.innerHTML = `
+            <div class="chat-msg-content">
+                <span class="chat-username">${escapeHtml(name)}:</span> ${escapeHtml(text)}
+                ${isBanned ? '<span class="chat-ban-badge">' + (window.t('label_banned') || '🔇') + '</span>' : ''}
+            </div>
+            <div class="chat-mod-wrap">
+                <button class="chat-mod-btn" title="Moderation">⋮</button>
+                <div class="chat-mod-menu">
+                    ${isBanned
+                        ? `<button class="chat-mod-option chat-mod-unban" data-target="${escapeHtml(name)}">
+                              <span>🔓</span> <span data-i18n="btn_unban">${window.t('btn_unban') || 'Розблокувати'}</span>
+                           </button>`
+                        : `<button class="chat-mod-option chat-mod-ban" data-target="${escapeHtml(name)}">
+                              <span>🚫</span> <span data-i18n="btn_ban">${window.t('btn_ban') || 'Заблокувати'}</span>
+                           </button>`
+                    }
+                </div>
+            </div>
+        `;
+
+        // Three-dot button click
+        const modBtn = el.querySelector('.chat-mod-btn');
+        const modMenu = el.querySelector('.chat-mod-menu');
+        modBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            // Close all other open menus
+            document.querySelectorAll('.chat-mod-menu.open').forEach(m => {
+                if (m !== modMenu) m.classList.remove('open');
+            });
+            modMenu.classList.toggle('open');
+        });
+
+        // Ban / unban action
+        const actionBtn = el.querySelector('.chat-mod-option');
+        if (actionBtn) {
+            actionBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const target = actionBtn.dataset.target;
+                if (actionBtn.classList.contains('chat-mod-ban')) {
+                    if (ws && ws.readyState === WebSocket.OPEN) {
+                        ws.send(JSON.stringify({ type: 'ban_user', username: target }));
+                    }
+                } else {
+                    if (ws && ws.readyState === WebSocket.OPEN) {
+                        ws.send(JSON.stringify({ type: 'unban_user', username: target }));
+                    }
+                }
+                modMenu.classList.remove('open');
+            });
+        }
+
         streamerChatMessages.appendChild(el);
         streamerChatMessages.scrollTop = streamerChatMessages.scrollHeight;
     }
@@ -59,6 +114,53 @@
         el.className = "bid-item";
         el.innerHTML = `<span class="bid-user">${escapeHtml(name)}</span> <span class="bid-amount">$${amount}</span>`;
         streamerBidsList.insertBefore(el, streamerBidsList.firstChild);
+    }
+
+    function refreshBanBadges() {
+        // Re-render menu state for all visible chat messages
+        streamerChatMessages.querySelectorAll('.chat-message-mod').forEach(el => {
+            const name = el.dataset.username;
+            const isBanned = bannedUsers.has(name);
+            // Update ban badge
+            let badge = el.querySelector('.chat-ban-badge');
+            if (isBanned && !badge) {
+                const content = el.querySelector('.chat-msg-content');
+                const b = document.createElement('span');
+                b.className = 'chat-ban-badge';
+                b.textContent = window.t('label_banned') || '🔇';
+                content.appendChild(b);
+            } else if (!isBanned && badge) {
+                badge.remove();
+            }
+            // Update menu option
+            const modMenu = el.querySelector('.chat-mod-menu');
+            if (modMenu) {
+                modMenu.innerHTML = isBanned
+                    ? `<button class="chat-mod-option chat-mod-unban" data-target="${escapeHtml(name)}">
+                          <span>🔓</span> <span data-i18n="btn_unban">${window.t('btn_unban') || 'Розблокувати'}</span>
+                       </button>`
+                    : `<button class="chat-mod-option chat-mod-ban" data-target="${escapeHtml(name)}">
+                          <span>🚫</span> <span data-i18n="btn_ban">${window.t('btn_ban') || 'Заблокувати'}</span>
+                       </button>`;
+                const actionBtn = modMenu.querySelector('.chat-mod-option');
+                if (actionBtn) {
+                    actionBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const target = actionBtn.dataset.target;
+                        if (actionBtn.classList.contains('chat-mod-ban')) {
+                            if (ws && ws.readyState === WebSocket.OPEN) {
+                                ws.send(JSON.stringify({ type: 'ban_user', username: target }));
+                            }
+                        } else {
+                            if (ws && ws.readyState === WebSocket.OPEN) {
+                                ws.send(JSON.stringify({ type: 'unban_user', username: target }));
+                            }
+                        }
+                        modMenu.classList.remove('open');
+                    });
+                }
+            }
+        });
     }
 
     function handleWsMessage(msg) {
@@ -76,6 +178,10 @@
                 if (streamerViewerCount) {
                     streamerViewerCount.innerHTML = msg.count + ' <span data-i18n="viewers">' + window.t('viewers') + '</span>';
                 }
+                break;
+            case "ban_list":
+                bannedUsers = new Set(msg.banned || []);
+                refreshBanBadges();
                 break;
         }
     }
@@ -197,11 +303,17 @@
     startBtn.addEventListener("click", startStream);
     stopBtn.addEventListener("click", stopStream);
 
+    // Close mod menus on click outside
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.chat-mod-menu.open').forEach(m => m.classList.remove('open'));
+    });
+
     window.addEventListener('languageChanged', () => {
         if (statusEl.hasAttribute("data-i18n")) {
             statusEl.textContent = window.t(statusEl.getAttribute("data-i18n"));
         }
         setBadgeLive(streamBadge.classList.contains("stream-live-badge"));
+        refreshBanBadges();
     });
 
 })();

@@ -84,6 +84,41 @@
                     placeholder.querySelector("p").textContent = window.t('waiting_stream');
                 }
                 break;
+            case "you_are_banned":
+                applyBanState(msg.banned);
+                break;
+        }
+    }
+
+    function applyBanState(isBanned) {
+        const chatWrap = document.querySelector('.chat-input-wrap');
+        const bidWrap = document.querySelector('.bid-input-wrap');
+        if (isBanned) {
+            // Disable chat
+            chatInput.disabled = true;
+            sendChatBtn.disabled = true;
+            chatInput.placeholder = window.t('banned_chat_placeholder') || 'Ви заблоковані';
+            // Disable bids
+            bidAmount.disabled = true;
+            placeBidBtn.disabled = true;
+            buyNowBtn.disabled = true;
+            // Show ban notice
+            if (!document.getElementById('banNotice')) {
+                const notice = document.createElement('div');
+                notice.id = 'banNotice';
+                notice.className = 'ban-notice';
+                notice.textContent = window.t('ban_notice') || 'Вас заблоковано модератором. Чат та ставки недоступні.';
+                chatWrap.parentElement.insertBefore(notice, chatWrap);
+            }
+        } else {
+            chatInput.disabled = false;
+            sendChatBtn.disabled = false;
+            chatInput.placeholder = window.t('placeholder_chat') || 'Send a message...';
+            bidAmount.disabled = false;
+            placeBidBtn.disabled = false;
+            buyNowBtn.disabled = false;
+            const notice = document.getElementById('banNotice');
+            if (notice) notice.remove();
         }
     }
 
