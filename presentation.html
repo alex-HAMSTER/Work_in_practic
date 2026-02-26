@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Commerce Platform - Executive Presentation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        /* ==========================================================================
+           CORE DESIGN SYSTEM (Business & Minimalist)
+           ========================================================================== */
+        :root {
+            --bg-body: #050505;
+            --bg-slide: #0a0a0a;
+            --border-color: #222222;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --accent-color: #d32f2f;
+            /* Matching the red buttons from the video */
+            --accent-hover: #b71c1c;
+            --ui-bg: #111111;
+            --ui-border: #333333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            display: grid;
+            gap: 40px;
+            grid-template-columns: 1fr;
+            margin: 0;
+            min-height: 100vh;
+            padding: 40px 0;
+            place-items: center;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Presentation Slide Container */
+        .slide {
+            background-color: var(--bg-slide);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            height: 720px;
+            /* Standard 16:9 720p */
+            width: 1280px;
+            overflow: hidden;
+            position: relative;
+            padding: 80px;
+        }
+
+        /* Slide Numbering */
+        .slide-counter {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        /* Company Logo / Header */
+        .slide-header {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .slide-header i {
+            color: var(--accent-color);
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 64px;
+            font-weight: 300;
+            letter-spacing: -1.5px;
+            line-height: 1.1;
+            margin-bottom: 24px;
+        }
+
+        h1 span {
+            font-weight: 700;
+        }
+
+        h2 {
+            font-size: 40px;
+            font-weight: 400;
+            letter-spacing: -0.5px;
+            margin-bottom: 40px;
+            color: var(--text-primary);
+        }
+
+        p {
+            font-size: 20px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            font-weight: 300;
+        }
+
+        /* Layout Grids */
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+            width: 100%;
+        }
+
+        .split-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+            height: 100%;
+        }
+
+        /* Lists */
+        .feature-list {
+            list-style: none;
+            margin-top: 30px;
+        }
+
+        .feature-list li {
+            font-size: 20px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .feature-list li i {
+            color: var(--text-primary);
+            font-size: 20px;
+            margin-top: 4px;
+        }
+
+        .feature-list strong {
+            color: var(--text-primary);
+            display: block;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        /* ==========================================================================
+           ABSTRACT UI MOCKUPS (Recreating the video feel elegantly)
+           ========================================================================== */
+        .ui-mockup {
+            background: var(--ui-bg);
+            border: 1px solid var(--ui-border);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+        }
+
+        /* Mockup 1: Top Bar (Login & Language) */
+        .mockup-topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .mockup-lang {
+            background: #1a1a1a;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #ccc;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .mockup-login {
+            background: #ffffff;
+            color: #000000;
+            padding: 10px 20px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        /* Mockup 2: Video & Commerce Area */
+        .mockup-video-area {
+            background: #000;
+            border-radius: 8px;
+            height: 250px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--ui-border);
+            overflow: hidden;
+        }
+
+        .mockup-video-overlay {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .mockup-price {
+            font-size: 32px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .mockup-btn-primary {
+            background: var(--accent-color);
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        /* Mockup 3: Auction Sidebar */
+        .mockup-sidebar {
+            background: #161616;
+            border: 1px solid var(--ui-border);
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .mockup-sidebar-header {
+            font-size: 14px;
+            color: var(--text-secondary);
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .mockup-bid-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+            margin-top: 10px;
+        }
+
+        .mockup-input {
+            background: #000;
+            border: 1px solid var(--ui-border);
+            color: #fff;
+            padding: 8px;
+            border-radius: 4px;
+            width: 80px;
+            text-align: right;
+        }
+
+        /* Mockup 4: Chat Moderation */
+        .mockup-chat-msg {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .mockup-chat-user {
+            color: var(--text-secondary);
+        }
+
+        .mockup-chat-text {
+            color: #fff;
+            margin-left: 10px;
+        }
+
+        .mockup-block-btn {
+            color: var(--accent-color);
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .mockup-blocked-alert {
+            background: rgba(211, 47, 47, 0.1);
+            color: var(--accent-color);
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            text-align: center;
+            border: 1px solid rgba(211, 47, 47, 0.3);
+            margin-top: 10px;
+        }
+
+        /* Mockup 5: Email Notification */
+        .mockup-email {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 30px;
+            color: #000;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .mockup-email h3 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .mockup-email p {
+            color: #555;
+            font-size: 16px;
+        }
+
+        .mockup-email .email-btn {
+            background: var(--accent-color);
+            color: #fff;
+            padding: 15px 40px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Slide 1: Title -->
+    <div class="slide">
+        <div class="slide-header"><i class="fa-solid fa-circle-play"></i> LiveCommerce</div>
+        <div class="content-wrapper" style="text-align: center; align-items: center;">
+            <div style="max-width: 800px;">
+                <h1>Live-Streaming <br><span>E-commerce Platform</span></h1>
+                <p style="font-size: 24px; margin-top: 20px;">Developed by Ukrainian Developers</p>
+
+                <div
+                    style="margin-top: 50px; width: 60px; height: 2px; background: var(--text-primary); margin-inline: auto;">
+                </div>
+                <p style="margin-top: 20px;">Oleksii Fedorchenko</p>
+                <p>Yevhen Ostapenko</p>
+                <p>Alina Demydenko</p>
+            </div>
+        </div>
+        <div class="slide-counter">01</div>
+    </div>
+
+    <!-- Slide 2: Access & Localization -->
+    <div class="slide">
+        <div class="slide-header"><i class="fa-solid fa-circle-play"></i> Overview</div>
+        <div class="content-wrapper">
+            <div class="split-layout">
+                <div>
+                    <h2>Frictionless Access <br>& Localization</h2>
+                    <p>We designed the onboarding process to be instantaneous, maximizing viewer retention from the
+                        first click.</p>
+
+                    <ul class="feature-list">
+                        <li>
+                            <i class="fa-brands fa-google"></i>
+                            <div>
+                                <strong>One-Click Authorization</strong>
+                                Secure, instant login via Google accounts minimizes entry barriers.
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fa-solid fa-globe"></i>
+                            <div>
+                                <strong>Dynamic Localization</strong>
+                                Built-in multi-language support (EN, UA, DA) allows seamless scaling to international
+                                markets.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Stylized UI Representation -->
+                <div class="ui-mockup">
+                    <div class="mockup-topbar">
+                        <div class="mockup-lang">
+                            🇺🇦 UA <i class="fa-solid fa-chevron-down" style="font-size: 10px;"></i>
+                        </div>
+                        <div class="mockup-login">
+                            <i class="fa-brands fa-google"></i> Sign in with Google
+                        </div>
+                    </div>
+                    <div class="mockup-topbar" style="border-bottom: none; padding-bottom: 0;">
+                        <div class="mockup-lang">
+                            🇬🇧 EN <i class="fa-solid fa-chevron-down" style="font-size: 10px;"></i>
+                        </div>
+                    </div>
+                    <div class="mockup-topbar" style="border-bottom: none; padding-bottom: 0;">
+                        <div class="mockup-lang">
+                            🇩🇰 DA <i class="fa-solid fa-chevron-down" style="font-size: 10px;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slide-counter">02</div>
+    </div>
+
+    <!-- Slide 3: Real-Time Commerce -->
+    <div class="slide">
+        <div class="slide-header"><i class="fa-solid fa-circle-play"></i> Core Features</div>
+        <div class="content-wrapper">
+            <div class="split-layout">
+                <div>
+                    <h2>Integrated Commerce <br>& Live Auctions</h2>
+                    <p>Capitalizing on FOMO (Fear Of Missing Out) and competitive dynamics to drive higher conversion
+                        rates.</p>
+
+                    <ul class="feature-list">
+                        <li>
+                            <i class="fa-solid fa-bolt"></i>
+                            <div>
+                                <strong>Instant "Buy Now"</strong>
+                                Interactive product cards overlay the stream, shortening the path to purchase.
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fa-solid fa-gavel"></i>
+                            <div>
+                                <strong>Real-Time Bidding</strong>
+                                Synchronized auction system where price updates are instant across all active viewers.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Stylized UI Representation -->
+                <div class="ui-mockup" style="gap: 15px;">
+                    <div class="mockup-video-area">
+                        <i class="fa-solid fa-user" style="font-size: 64px; color: #222;"></i>
+                        <div class="mockup-video-overlay">
+                            <div class="mockup-price">$100</div>
+                            <button class="mockup-btn-primary">Buy Now</button>
+                        </div>
+                    </div>
+                    <div class="mockup-sidebar"
+                        style="flex-direction: row; justify-content: space-between; align-items: center;">
+                        <div class="mockup-sidebar-header">
+                            <i class="fa-solid fa-gavel"></i> Live Auction
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="color: var(--text-secondary); font-size: 12px;">Place bid</span>
+                            <div class="mockup-input">101</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slide-counter">03</div>
+    </div>
+
+    <!-- Slide 4: Moderation -->
+    <div class="slide">
+        <div class="slide-header"><i class="fa-solid fa-circle-play"></i> Streamer Tools</div>
+        <div class="content-wrapper">
+            <div class="split-layout">
+                <div>
+                    <h2>Audience Control <br>& Moderation</h2>
+                    <p>Maintaining a high-quality environment is crucial for live commerce. We provide broadcasters with
+                        instantaneous moderation tools.</p>
+
+                    <ul class="feature-list">
+                        <li>
+                            <i class="fa-solid fa-shield-halved"></i>
+                            <div>
+                                <strong>Instant Enforcement</strong>
+                                Moderators can block or unblock users in real-time directly from the chat interface.
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fa-solid fa-comment-slash"></i>
+                            <div>
+                                <strong>Visual Feedback</strong>
+                                Blocked users receive immediate interface feedback, preventing further disruption.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Stylized UI Representation -->
+                <div class="ui-mockup">
+                    <div class="mockup-sidebar-header"
+                        style="border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">
+                        <i class="fa-solid fa-comments"></i> Live Chat
+                    </div>
+                    <div class="mockup-chat-msg">
+                        <div>
+                            <span class="mockup-chat-user">Alex HAMSTER:</span>
+                            <span class="mockup-chat-text">hi</span>
+                        </div>
+                        <div class="mockup-block-btn"><i class="fa-solid fa-ban"></i> Block</div>
+                    </div>
+                    <div class="mockup-blocked-alert">
+                        You have been blocked by a moderator. Chat is unavailable.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slide-counter">04</div>
+    </div>
+
+    <!-- Slide 5: Retention -->
+    <div class="slide">
+        <div class="slide-header"><i class="fa-solid fa-circle-play"></i> Retention System</div>
+        <div class="content-wrapper">
+            <div class="split-layout">
+                <div>
+                    <h2>Automated Audience <br>Retention</h2>
+                    <p>A closed-loop system designed to bring users back to the platform the moment a broadcast goes
+                        live.</p>
+
+                    <ul class="feature-list">
+                        <li>
+                            <i class="fa-solid fa-envelope-open-text"></i>
+                            <div>
+                                <strong>Event Triggers</strong>
+                                Automated email notifications are dispatched instantly when a streamer starts a session.
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fa-solid fa-link"></i>
+                            <div>
+                                <strong>Deep Linking</strong>
+                                Direct "Watch Stream" calls-to-action bypass friction, dropping users straight into the
+                                auction.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Stylized UI Representation -->
+                <div class="ui-mockup" style="background: #222;">
+                    <div class="mockup-email">
+                        <h3>Stream has started!</h3>
+                        <p>Hi Alex HAMSTER,<br><br>The stream has just started. Join now to view new products and
+                            participate in the auction!</p>
+                        <div class="email-btn">Watch stream</div>
+                        <p style="font-size: 12px; color: #999; margin-top: 10px;">Don't miss out! Auctions are only
+                            active during the stream.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slide-counter">05</div>
+    </div>
+
+    <!-- Slide 6: Summary & Contact -->
+    <div class="slide">
+        <div class="slide-header"><i class="fa-solid fa-circle-play"></i> Summary</div>
+        <div class="content-wrapper" style="text-align: center; align-items: center;">
+            <div style="max-width: 800px;">
+                <h2>Ready for Deployment</h2>
+                <p style="margin-bottom: 40px;">Our architecture is built for low-latency streaming, international
+                    scalability, and instantaneous transaction processing.</p>
+
+                <div style="display: flex; gap: 40px; justify-content: center; margin-bottom: 60px;">
+                    <div
+                        style="text-align: left; background: var(--ui-bg); padding: 20px 30px; border-radius: 8px; border: 1px solid var(--ui-border);">
+                        <div style="color: var(--text-primary); font-size: 24px; font-weight: 600;">100%</div>
+                        <div style="color: var(--text-secondary); font-size: 14px; margin-top: 5px;">Real-time sync
+                        </div>
+                    </div>
+                    <div
+                        style="text-align: left; background: var(--ui-bg); padding: 20px 30px; border-radius: 8px; border: 1px solid var(--ui-border);">
+                        <div style="color: var(--text-primary); font-size: 24px; font-weight: 600;">Low</div>
+                        <div style="color: var(--text-secondary); font-size: 14px; margin-top: 5px;">Stream Latency
+                        </div>
+                    </div>
+                    <div
+                        style="text-align: left; background: var(--ui-bg); padding: 20px 30px; border-radius: 8px; border: 1px solid var(--ui-border);">
+                        <div style="color: var(--text-primary); font-size: 24px; font-weight: 600;">Global</div>
+                        <div style="color: var(--text-secondary); font-size: 14px; margin-top: 5px;">Localization Ready
+                        </div>
+                    </div>
+                </div>
+
+                <div style="font-size: 16px; color: var(--text-secondary);">
+                    suported by <span style="margin: 0 15px;">|</span> www.investors.site, www.ukraineboost.com
+                </div>
+            </div>
+        </div>
+        <div class="slide-counter">06</div>
+    </div>
+
+</body>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        let isScrolling = false;
+        const slides = document.querySelectorAll('.slide');
+        let currentSlideIndex = 0;
+
+        // Optional: immediately scroll to top on load
+        window.scrollTo(0, 0);
+
+        window.addEventListener('wheel', (e) => {
+            e.preventDefault(); // Stop default scroll behavior
+            if (isScrolling) return;
+
+            if (e.deltaY > 0) {
+                // Scroll down
+                if (currentSlideIndex < slides.length - 1) {
+                    currentSlideIndex++;
+                    scrollToSlide(currentSlideIndex);
+                }
+            } else if (e.deltaY < 0) {
+                // Scroll up
+                if (currentSlideIndex > 0) {
+                    currentSlideIndex--;
+                    scrollToSlide(currentSlideIndex);
+                }
+            }
+        }, { passive: false });
+
+        function scrollToSlide(index) {
+            isScrolling = true;
+            slides[index].scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            // Cooldown to prevent multiple scrolls from a single swipe/wheel spin
+            setTimeout(() => {
+                isScrolling = false;
+            }, 800);
+        }
+
+        // Handle keyboard navigation as a bonus
+        window.addEventListener('keydown', (e) => {
+            if (isScrolling) return;
+
+            // Don't scroll if user is interacting with an input
+            if (e.target.tagName.toLowerCase() === 'input' || e.target.tagName.toLowerCase() === 'textarea') return;
+
+            if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
+                e.preventDefault();
+                if (currentSlideIndex < slides.length - 1) {
+                    currentSlideIndex++;
+                    scrollToSlide(currentSlideIndex);
+                }
+            } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+                e.preventDefault();
+                if (currentSlideIndex > 0) {
+                    currentSlideIndex--;
+                    scrollToSlide(currentSlideIndex);
+                }
+            }
+        });
+    });
+</script>
+
+</html>
